@@ -42,7 +42,6 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .cors(withDefaults())
             .authorizeHttpRequests(authz -> authz
-                // 1. DOCUMENTACIÓN SWAGGER (PÚBLICO)
                 .requestMatchers(
                     "/", "/index.html", "/static/**", "/favicon.ico",
                     "/swagger-ui.html", "/swagger-ui/**", 
@@ -50,25 +49,20 @@ public class SecurityConfig {
                     "/swagger-resources/**", "/webjars/**"
                 ).permitAll()
                 
-                // 2. AUTENTICACIÓN Y REGISTRO (PÚBLICO)
                 .requestMatchers("/api/auth/**").permitAll() 
                 .requestMatchers(HttpMethod.POST, "/api/usuarios").permitAll() 
                 .requestMatchers(HttpMethod.POST, "/api/pedidos").permitAll() 
-                // -------------------------------------------
 
-                // 3. VITRINA PÚBLICA (Solo lectura GET)
                 .requestMatchers(HttpMethod.GET, "/api/productos/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/categorias/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/archivos/descargar/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/pedidos/usuario/**").authenticated()
                 .requestMatchers(HttpMethod.GET, "/api/pedidos/usuario/**").hasAnyAuthority("user", "admin", "super-admin")
 
-                // 4. PANEL DE ADMIN (PROTEGIDO)
                 .requestMatchers("/api/**").hasAnyAuthority("admin", "super-admin")
 
-                // 5. RESTO
                 .anyRequest().authenticated()
             )
-            // Configuración para JWT (Sin estado / Stateless)
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authenticationProvider(authenticationProvider())
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
