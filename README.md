@@ -1,6 +1,6 @@
 # Rushav Backend - API RESTful E-commerce
 
-Este repositorio contiene la lógica del lado del servidor para la plataforma de comercio electrónico "Rushav". El sistema está construido utilizando Java con el framework Spring Boot y sigue una arquitectura de API RESTful.
+Este repositorio contiene la lógica del servidor para la plataforma de comercio electrónico "Rushav". El sistema está construido utilizando Java con el framework Spring Boot y sigue una arquitectura de API RESTful.
 
 ## Descripción del Proyecto
 
@@ -25,20 +25,27 @@ Antes de ejecutar la aplicación, asegúrese de tener instalado:
 2.  MySQL Server en ejecución (puerto 3306 por defecto).
 3.  Maven (opcional, el proyecto incluye el wrapper `mvnw`).
 
-## Instrucciones de Instalación y Configuración de Base de Datos
+## Instrucciones de Instalación y Configuración
 
 1.  **Clonar el repositorio:**
-    Descargue el código fuente desde el repositorio de GitHub.
+    Descargue el código fuente en su equipo local.
 
-2.  **Configuración de la Base de Datos:**
-    El sistema requiere una base de datos MySQL creada previamente. Abra su cliente de base de datos (MySQL Workbench, DBeaver, o línea de comandos) y ejecute:
+2.  **Creación de Base de Datos:**
+    El sistema requiere un esquema de base de datos vacío. Abra su cliente MySQL (Workbench, DBeaver o consola) y ejecute:
     ```sql
     CREATE DATABASE rushav_db;
     ```
 
+3.  **Configuración de Credenciales:**
+    El archivo de configuración se encuentra en `src/main/resources/application.properties`. Por defecto, está configurado para el usuario `root` sin contraseña. Si su instalación local de MySQL tiene contraseña, modifique las líneas:
+    ```properties
+    spring.datasource.username=root
+    spring.datasource.password=SU_CONTRASEÑA_AQUI
+    ```
+
 ## Instrucciones de Ejecución
 
-Para iniciar el servidor, abra una terminal en la raíz del proyecto y ejecute el siguiente comando según su sistema operativo:
+Para iniciar el servidor, abra una terminal en la raíz del proyecto y ejecute el siguiente comando:
 
 **En Windows:**
 ```bash
@@ -48,19 +55,19 @@ En macOS / Linux:
 Bash
 
 ./mvnw spring-boot:run
-El servidor iniciará en el puerto 8080. La primera ejecución puede tardar unos minutos mientras se descargan las dependencias y se inicializa la estructura de la base de datos.
+El servidor iniciará en el puerto 8080.
 
-Nota: El sistema está configurado con spring.jpa.hibernate.ddl-auto=create-drop y spring.sql.init.mode=always. Esto significa que al iniciar la aplicación, las tablas se crearán automáticamente y se poblarán con datos de prueba (semilla) definidos en data.sql.
+Nota sobre Persistencia: El sistema está configurado con spring.jpa.hibernate.ddl-auto=create-drop y spring.sql.init.mode=always. Esto significa que al iniciar la aplicación, las tablas se crearán automáticamente y se poblarán con los datos de prueba definidos en data.sql.
 
-Documentación de la API
-El proyecto incluye documentación interactiva generada automáticamente con Swagger. Una vez que la aplicación esté en ejecución, puede acceder a ella en la siguiente URL:
+Documentación de la API (Swagger)
+El proyecto incluye documentación interactiva. Una vez que la aplicación esté en ejecución, acceda a:
 
 URL: http://localhost:8080/swagger-ui.html
 
 Desde esta interfaz es posible visualizar todos los endpoints disponibles, los modelos de datos (DTOs) y probar las peticiones HTTP directamente.
 
 Credenciales de Prueba
-El sistema se inicializa con un usuario administrador por defecto para facilitar las pruebas de los endpoints protegidos y el panel de administración.
+El sistema se inicializa con un usuario administrador por defecto para acceder a las rutas protegidas y al panel de administración:
 
 Rol: Super Admin
 
@@ -68,4 +75,21 @@ Correo Electrónico: admin@rushav.cl
 
 Contraseña: admin123
 
-Para acceder a los endpoints protegidos en Swagger, debe utilizar el endpoint /api/auth/login con estas credenciales, copiar el token JWT resultante y utilizar el botón "Authorize" en la parte superior de la interfaz Swagger.
+Instrucciones de Autenticación en Swagger:
+
+Utilice el endpoint /api/auth/login con las credenciales anteriores.
+
+Copie el token JWT de la respuesta.
+
+Haga clic en el botón "Authorize" en la parte superior y pegue el token con el formato: Bearer SU_TOKEN.
+
+Scripts SQL (Entregable)
+Aunque la aplicación genera el esquema automáticamente, los scripts SQL físicos solicitados en la evaluación (creacion_tablas.sql y datos_prueba.sql) se encuentran adjuntos en la carpeta principal de la entrega comprimida (.zip) para su revisión manual si fuera necesario.
+
+## Nota sobre Script de Datos (Seed Data)
+
+Para efectos de evaluación del punto "Script con datos de prueba", el archivo SQL que contiene la población inicial de la base de datos (Usuarios y Productos) se encuentra ubicado dentro de la estructura del proyecto en:
+
+`src/main/resources/data.sql`
+
+Este script se ejecuta automáticamente al iniciar la aplicación para garantizar que el entorno de pruebas esté listo.
